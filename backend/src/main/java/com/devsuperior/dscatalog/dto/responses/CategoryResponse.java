@@ -15,11 +15,9 @@ import java.time.OffsetDateTime;
 public class CategoryResponse {
     private Long id;
     private String name;
-    private OffsetDateTime createdAt;
 
     public CategoryResponse(Category category) {
         this.id = category.getId();
         this.name = category.getName();
-        this.createdAt = category.getCreatedAt();
     }
 }
