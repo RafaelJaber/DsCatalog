@@ -1,6 +1,7 @@
 package com.devsuperior.dscatalog.controllers.handlers;
 
 import com.devsuperior.dscatalog.dto.responses.errors.CustomErrorResponse;
+import com.devsuperior.dscatalog.services.exceptions.DatabaseIntegrityException;
 import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,13 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<CustomErrorResponse> entityNotFoundExceptionHandler(EntityNotFoundException ex, HttpServletRequest request) {
         HttpStatus status = HttpStatus.NOT_FOUND;
+        CustomErrorResponse err = getCustomError(status, ex.getMessage(), request);
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(DatabaseIntegrityException.class)
+    public ResponseEntity<CustomErrorResponse> databaseIntegrityExceptionHandler(DatabaseIntegrityException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
         CustomErrorResponse err = getCustomError(status, ex.getMessage(), request);
         return ResponseEntity.status(status).body(err);
     }

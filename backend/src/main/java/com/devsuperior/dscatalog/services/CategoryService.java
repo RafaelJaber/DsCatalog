@@ -4,8 +4,11 @@ import com.devsuperior.dscatalog.dto.requests.CategoryRequest;
 import com.devsuperior.dscatalog.dto.responses.CategoryResponse;
 import com.devsuperior.dscatalog.entities.Category;
 import com.devsuperior.dscatalog.repositories.CategoryRepository;
+import com.devsuperior.dscatalog.services.exceptions.DatabaseIntegrityException;
 import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
@@ -56,6 +59,18 @@ public class CategoryService {
             return new CategoryResponse(updated);
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException("Category", "id", id.toString());
+        }
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    public void deleteById(Long id) {
+        if(!categoryRepository.existsById(id)) {
+            throw new EntityNotFoundException("Category", "id", id.toString());
+        }
+        try {
+            categoryRepository.deleteById(id);
+        } catch (DataIntegrityViolationException ex) {
+            throw new DatabaseIntegrityException();
         }
     }
 

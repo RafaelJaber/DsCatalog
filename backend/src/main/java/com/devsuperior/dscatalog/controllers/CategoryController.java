@@ -50,4 +50,10 @@ public class CategoryController {
         CategoryResponse updated = categoryService.update(requestDto, id);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        categoryService.deleteById(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
