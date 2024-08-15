@@ -39,16 +39,28 @@ public class CategoryService {
 
     @Transactional
     public CategoryResponse insert(CategoryRequest request) {
-        Category category = getCategory(request);
-        category = categoryRepository.save(category);
-        return new CategoryResponse(category);
+        Category category = new Category();
+        copyDtoToEntity(request, category);
+
+        Category inserted = categoryRepository.save(category);
+        return new CategoryResponse(inserted);
+    }
+
+    @Transactional
+    public CategoryResponse update(CategoryRequest request, Long id) {
+        try {
+            Category category = categoryRepository.getReferenceById(id);
+            copyDtoToEntity(request, category);
+
+            Category updated = categoryRepository.save(category);
+            return new CategoryResponse(updated);
+        } catch (EntityNotFoundException e) {
+            throw new EntityNotFoundException("Category", "id", id.toString());
+        }
     }
 
 
-    private static Category getCategory(CategoryRequest request) {
-        return Category.builder()
-                .name(request.getName())
-                .createdAt(OffsetDateTime.now())
-                .build();
+    private static void copyDtoToEntity(CategoryRequest dto, Category entity) {
+       entity.setName(dto.getName());
     }
 }

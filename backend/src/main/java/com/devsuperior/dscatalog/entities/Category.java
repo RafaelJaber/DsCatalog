@@ -2,6 +2,7 @@ package com.devsuperior.dscatalog.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -22,6 +23,7 @@ public class Category {
     private String name;
 
     @Column(name = "created_at")
+    @CreationTimestamp
     private OffsetDateTime createdAt;
 
     @Override
