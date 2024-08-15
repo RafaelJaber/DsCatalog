@@ -3,6 +3,7 @@ package com.devsuperior.dscatalog.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.OffsetDateTime;
 import java.util.Objects;
 
 @Entity
@@ -19,6 +20,9 @@ public class Category {
     private Long id;
 
     private String name;
+
+    @Column(name = "created_at")
+    private OffsetDateTime createdAt;
 
     @Override
     public boolean equals(Object o) {
