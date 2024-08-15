@@ -1,6 +1,6 @@
-package com.devsuperior.dscatalog.resources.handlers;
+package com.devsuperior.dscatalog.controllers.handlers;
 
-import com.devsuperior.dscatalog.dto.responses.CustomErrorResponse;
+import com.devsuperior.dscatalog.dto.responses.errors.CustomErrorResponse;
 import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;

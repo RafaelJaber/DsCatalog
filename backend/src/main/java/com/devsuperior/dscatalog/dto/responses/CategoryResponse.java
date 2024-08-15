@@ -1,4 +1,4 @@
-package com.devsuperior.dscatalog.dto;
+package com.devsuperior.dscatalog.dto.responses;
 
 import com.devsuperior.dscatalog.entities.Category;
 import lombok.AllArgsConstructor;
@@ -12,12 +12,12 @@ import java.time.OffsetDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryDTO {
+public class CategoryResponse {
     private Long id;
     private String name;
     private OffsetDateTime createdAt;
 
-    public CategoryDTO(Category category) {
+    public CategoryResponse(Category category) {
         this.id = category.getId();
         this.name = category.getName();
         this.createdAt = category.getCreatedAt();

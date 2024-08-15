@@ -1,4 +1,4 @@
-package com.devsuperior.dscatalog.dto.responses;
+package com.devsuperior.dscatalog.dto.responses.errors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

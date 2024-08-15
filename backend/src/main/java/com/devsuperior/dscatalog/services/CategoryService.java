@@ -1,6 +1,6 @@
 package com.devsuperior.dscatalog.services;
 
-import com.devsuperior.dscatalog.dto.CategoryDTO;
+import com.devsuperior.dscatalog.dto.responses.CategoryResponse;
 import com.devsuperior.dscatalog.entities.Category;
 import com.devsuperior.dscatalog.repositories.CategoryRepository;
 import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
@@ -19,19 +19,19 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public List<CategoryDTO> findAll() {
+    public List<CategoryResponse> findAll() {
         List<Category> categories = categoryRepository.findAll();
         return categories
                 .stream()
-                .map(CategoryDTO::new)
+                .map(CategoryResponse::new)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public CategoryDTO findById(Long id) {
+    public CategoryResponse findById(Long id) {
         Category category = categoryRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Category", "id", id.toString())
         );
-        return new CategoryDTO(category);
+        return new CategoryResponse(category);
     }
 }

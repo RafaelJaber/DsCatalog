@@ -1,6 +1,6 @@
-package com.devsuperior.dscatalog.resources;
+package com.devsuperior.dscatalog.controllers;
 
-import com.devsuperior.dscatalog.dto.CategoryDTO;
+import com.devsuperior.dscatalog.dto.responses.CategoryResponse;
 import com.devsuperior.dscatalog.services.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,24 +13,24 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
-public class CategoryResource {
+public class CategoryController {
 
     private final CategoryService categoryService;
 
-    public CategoryResource(CategoryService categoryService) {
+    public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> findAll() {
-        List<CategoryDTO> list = categoryService.findAll();
+    public ResponseEntity<List<CategoryResponse>> findAll() {
+        List<CategoryResponse> list = categoryService.findAll();
 
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDTO> findById(@PathVariable Long id) {
-        CategoryDTO categoryDTO = categoryService.findById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(categoryDTO);
+    public ResponseEntity<CategoryResponse> findById(@PathVariable Long id) {
+        CategoryResponse categoryResponse = categoryService.findById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(categoryResponse);
     }
 }
