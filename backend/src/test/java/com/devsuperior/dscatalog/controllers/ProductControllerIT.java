@@ -8,6 +8,7 @@ import com.devsuperior.dscatalog.dto.requests.ProductRequest;
 import com.devsuperior.dscatalog.tests.Factory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@Tag("Integration")
 public class ProductControllerIT {
 
     @Autowired
@@ -125,5 +127,15 @@ public class ProductControllerIT {
 
         result.andExpect(status().isNotFound());
         result.andExpect(jsonPath("$.path").value(String.format("/products/%s", nonExistingId)));
+    }
+
+    @Test
+    public void deleteShouldThrowsEntityNotFoundExceptionWhenIdDoesNotExists() throws Exception {
+        ResultActions result =
+                mockMvc.perform(delete("/products/{id}", nonExistingId)
+                        .accept(MediaType.APPLICATION_JSON)
+                );
+
+        result.andExpect(status().isNotFound());
     }
 }

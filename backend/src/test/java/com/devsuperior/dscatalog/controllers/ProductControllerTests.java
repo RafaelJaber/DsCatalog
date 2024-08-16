@@ -12,6 +12,7 @@ import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
 import com.devsuperior.dscatalog.tests.Factory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -28,6 +29,7 @@ import java.util.List;
 
 
 @WebMvcTest(ProductController.class)
+@Tag("Unit")
 public class ProductControllerTests {
 
     @Autowired
