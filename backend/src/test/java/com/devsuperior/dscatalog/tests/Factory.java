@@ -79,7 +79,7 @@ public class Factory {
                 .build();
     }
 
-    public static CategoryRequest createCategoryProductRequest() {
+    public static CategoryRequest createCategoryRequest() {
         Category category = createCategory();
         return createCategoryRequest(category);
     }

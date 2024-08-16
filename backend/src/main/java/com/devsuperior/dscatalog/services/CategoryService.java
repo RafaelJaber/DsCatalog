@@ -54,7 +54,7 @@ public class CategoryService {
 
             Category updated = categoryRepository.save(category);
             return new CategoryResponse(updated);
-        } catch (EntityNotFoundException e) {
+        } catch (jakarta.persistence.EntityNotFoundException e) {
             throw new EntityNotFoundException("Category", "id", id.toString());
         }
     }
