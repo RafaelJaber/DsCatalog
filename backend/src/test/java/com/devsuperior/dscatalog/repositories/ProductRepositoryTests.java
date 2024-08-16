@@ -28,19 +28,19 @@ public class ProductRepositoryTests {
     }
 
     @Test
-    public void shouldFindByIdReturnOptionalNotNullWithExistingId() {
+    public void findByIdShouldReturnNonEmptyOptionalWhenIdExists() {
         Optional<Product> product = productRepository.findById(existingId);
         Assertions.assertTrue(product.isPresent());
     }
 
     @Test
-    public void shouldFindByIdReturnOptionalEmptyWithNonPresentId() {
+    public void findByIdShouldReturnEmptyOptionalWhenIdDoesNotExist() {
         Optional<Product> product = productRepository.findById(nonExistingId);
         Assertions.assertFalse(product.isPresent());
     }
 
     @Test
-    public void shouldPersistObjectWithAutoIncrementWhenIdIsNull() {
+    public void saveShouldPersistWithAutoIncrementWhenIdIsNull() {
         Product product = Factory.createProduct();
         product.setId(null);
 
@@ -51,7 +51,7 @@ public class ProductRepositoryTests {
     }
 
     @Test
-    public void shouldUpdateObjectWithExistingId() {
+    public void saveShouldUpdateExistingProductWhenIdExists() {
         Product product = productRepository.findById(existingId).get();
 
         product.setName("Updated Name");
@@ -62,7 +62,7 @@ public class ProductRepositoryTests {
     }
 
     @Test
-    public void shouldDeleteObjectWhenIdExists() {
+    public void deleteShouldRemoveProductWhenIdExists() {
 
         productRepository.deleteById(existingId);
 
