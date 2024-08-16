@@ -120,7 +120,7 @@ public class ProductServiceIT {
 
     @Test
     public void updateShouldBeThrowsExceptionWhenIdDoesNotExist() {
-        Assertions.assertThrows(jakarta.persistence.EntityNotFoundException.class, () -> {
+        Assertions.assertThrows(EntityNotFoundException.class, () -> {
             productService.update(productRequest, nonExistingId);
         });
     }

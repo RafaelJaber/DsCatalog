@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.devsuperior.dscatalog.dto.requests.ProductRequest;
 import com.devsuperior.dscatalog.tests.Factory;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class ProductControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private Long existingId;
     private Long nonExistingId;
@@ -50,5 +54,76 @@ public class ProductControllerIT {
         result.andExpect(jsonPath("$.content[0].name").value("Macbook Pro"));
         result.andExpect(jsonPath("$.content[1].name").value("PC Gamer"));
         result.andExpect(jsonPath("$.content[2].name").value("PC Gamer Alfa"));
+    }
+
+    @Test
+    public void findByIdShouldReturnProductWhenIdExists() throws Exception {
+        ResultActions result =
+                mockMvc.perform(get("/products/{id}", existingId)
+                        .accept(MediaType.APPLICATION_JSON)
+                );
+
+        result.andExpect(status().isOk());
+        result.andExpect(jsonPath("$.id").value(existingId));
+    }
+
+    @Test
+    public void findByIdShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
+        ResultActions result =
+                mockMvc.perform(get("/products/{id}", nonExistingId)
+                        .accept(MediaType.APPLICATION_JSON)
+                );
+
+        result.andExpect(status().isNotFound());
+        result.andExpect(jsonPath("$.path").value(String.format("/products/%s", nonExistingId)));
+    }
+
+    @Test
+    public void insertShouldBeAbleToPersistProduct() throws Exception {
+        String jsonBody = objectMapper.writeValueAsString(productRequest);
+        ResultActions result =
+                mockMvc.perform(post("/products", existingId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                );
+
+        result.andExpect(status().isCreated());
+        result.andExpect(jsonPath("$.id").exists());
+        result.andExpect(jsonPath("$.name").exists());
+        result.andExpect(jsonPath("$.description").exists());
+    }
+
+    @Test
+    public void updateShouldReturnProductResponseWhenIdExists() throws Exception {
+        String newName = "NEW_NAME";
+        productRequest.setName(newName);
+        String jsonBody = objectMapper.writeValueAsString(productRequest);
+        ResultActions result =
+                mockMvc.perform(put("/products/{id}", existingId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                );
+
+        result.andExpect(status().isOk());
+        result.andExpect(jsonPath("$.id").exists());
+        result.andExpect(jsonPath("$.name").exists());
+        result.andExpect(jsonPath("$.description").exists());
+        result.andExpect(jsonPath("$.name").value(newName));
+    }
+
+    @Test
+    public void updateShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
+        String jsonBody = objectMapper.writeValueAsString(productRequest);
+        ResultActions result =
+                mockMvc.perform(put("/products/{id}", nonExistingId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                );
+
+        result.andExpect(status().isNotFound());
+        result.andExpect(jsonPath("$.path").value(String.format("/products/%s", nonExistingId)));
     }
 }

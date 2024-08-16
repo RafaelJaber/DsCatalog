@@ -63,7 +63,7 @@ public class ProductService {
 
             Product updated = productRepository.save(product);
             return new ProductResponse(updated, updated.getCategories());
-        } catch (EntityNotFoundException e) {
+        } catch (jakarta.persistence.EntityNotFoundException e) {
             throw new EntityNotFoundException("Product", "id", id.toString());
         }
     }
