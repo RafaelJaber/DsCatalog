@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @Tag("Integration")
-class DscatalogApplicationTests {
+class DscatalogApplicationIT {
 
     @Test
     @DisplayName("Should load application context successfully")
