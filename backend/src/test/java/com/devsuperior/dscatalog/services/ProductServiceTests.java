@@ -9,10 +9,7 @@ import com.devsuperior.dscatalog.repositories.ProductRepository;
 import com.devsuperior.dscatalog.services.exceptions.DatabaseIntegrityException;
 import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
 import com.devsuperior.dscatalog.tests.Factory;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
@@ -80,6 +77,7 @@ public class ProductServiceTests {
     }
 
     @Test
+    @DisplayName("Should return a paginated list of products")
     public void findAllPagedShouldReturnPage() {
         Pageable pageable = PageRequest.of(0, 10);
 
@@ -90,6 +88,7 @@ public class ProductServiceTests {
     }
 
     @Test
+    @DisplayName("Should return a product when ID exists")
     public void findByIdShouldReturnProductWhenExistingId() {
         ProductResponse result = productService.findById(existingId);
 
@@ -98,6 +97,7 @@ public class ProductServiceTests {
     }
 
     @Test
+    @DisplayName("Should throw EntityNotFoundException when ID does not exist")
     public void findByIdShouldThrowsExceptionWhenNonExistingId() {
         Assertions.assertThrows(EntityNotFoundException.class, () -> {
             productService.findById(nonExistingId);
@@ -106,6 +106,7 @@ public class ProductServiceTests {
     }
 
     @Test
+    @DisplayName("Should persist a product successfully")
     public void insertShouldBeAbleToPersistProduct() {
         Assertions.assertDoesNotThrow(() -> {
             ProductRequest request = Factory.createProductRequest();
@@ -115,6 +116,7 @@ public class ProductServiceTests {
     }
 
     @Test
+    @DisplayName("Should return a product response when updating an existing product")
     public void updateShouldBeReturnProductResponseWhenIdExists() {
         ProductRequest productRequest = Factory.createProductRequest();
 
@@ -125,6 +127,7 @@ public class ProductServiceTests {
     }
 
     @Test
+    @DisplayName("Should throw EntityNotFoundException when updating a non-existent product")
     public void updateShouldBeThrowsExceptionWhenIdDoesNotExist() {
         ProductRequest productRequest = Factory.createProductRequest();
 
@@ -137,6 +140,7 @@ public class ProductServiceTests {
 
 
     @Test
+    @DisplayName("Should delete a product when ID exists")
     public void deleteShouldDoNothingWhenIdExists() {
         Assertions.assertDoesNotThrow(() -> {
             productService.deleteById(existingId);
@@ -146,6 +150,7 @@ public class ProductServiceTests {
     }
 
     @Test
+    @DisplayName("Should throw EntityNotFoundException when trying to delete a non-existent product")
     public void deleteShouldThrowEntityNotFoundExceptionWhenIdDoesNotExist() {
         Assertions.assertThrows(EntityNotFoundException.class, () -> {
             productService.deleteById(nonExistingId);
@@ -155,6 +160,7 @@ public class ProductServiceTests {
     }
 
     @Test
+    @DisplayName("Should throw DatabaseIntegrityException when deleting a product with dependencies")
     public void deleteShouldThrowDatabaseIntegrityExceptionWhenDependentId() {
         Assertions.assertThrows(DatabaseIntegrityException.class, () -> {
             productService.deleteById(dependentId);

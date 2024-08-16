@@ -5,10 +5,7 @@ import com.devsuperior.dscatalog.dto.responses.ProductResponse;
 import com.devsuperior.dscatalog.repositories.ProductRepository;
 import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
 import com.devsuperior.dscatalog.tests.Factory;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -42,6 +39,7 @@ public class ProductServiceIT {
     }
 
     @Test
+    @DisplayName("Should return a page of products when page is 0 and size is 10")
     public void findAllPagedShouldReturnPageWhenPage0Size10() {
         int pageNumber = 0;
         int pageSize = 10;
@@ -57,6 +55,7 @@ public class ProductServiceIT {
     }
 
     @Test
+    @DisplayName("Should return an empty page when the page number does not exist")
     public void findAllPagedShouldReturnEmptyPageWHenPageDoesNotExist() {
         int pageNumber = 50;
         int pageSize = 25;
@@ -69,6 +68,7 @@ public class ProductServiceIT {
     }
 
     @Test
+    @DisplayName("Should return a sorted page of products when sorted by name")
     public void findAllPagedShouldReturnSortedPageWhenSortByName() {
         int pageNumber = 0;
         int pageSize = 10;
@@ -85,6 +85,7 @@ public class ProductServiceIT {
     }
 
     @Test
+    @DisplayName("Should return a product when ID exists")
     public void findByIdShouldReturnProductWhenIdExists() {
         ProductResponse result = productService.findById(existingId);
 
@@ -93,6 +94,7 @@ public class ProductServiceIT {
     }
 
     @Test
+    @DisplayName("Should throw EntityNotFoundException when ID does not exist")
     public void findByIdShouldThrowEntityNotFoundExceptionWhenIdDoesExists() {
         Assertions.assertThrows(EntityNotFoundException.class, () -> {
             productService.findById(nonExistingId);
@@ -100,6 +102,7 @@ public class ProductServiceIT {
     }
 
     @Test
+    @DisplayName("Should persist a new product")
     public void insertShouldPersistProduct() {
         ProductResponse result = productService.insert(productRequest);
 
@@ -109,6 +112,7 @@ public class ProductServiceIT {
     }
 
     @Test
+    @DisplayName("Should update a product and return the response when ID exists")
     public void updateShouldBeReturnProductResponseWhenIdExists() {
         String newName = "UPDATED_NAME";
 
@@ -121,6 +125,7 @@ public class ProductServiceIT {
     }
 
     @Test
+    @DisplayName("Should throw EntityNotFoundException when updating a product with non-existing ID")
     public void updateShouldBeThrowsExceptionWhenIdDoesNotExist() {
         Assertions.assertThrows(EntityNotFoundException.class, () -> {
             productService.update(productRequest, nonExistingId);
@@ -128,6 +133,7 @@ public class ProductServiceIT {
     }
 
     @Test
+    @DisplayName("Should delete a product when ID exists")
     public void deleteShouldDeleteResourceWhenIdExists() {
         productService.deleteById(existingId);
 
@@ -135,6 +141,7 @@ public class ProductServiceIT {
     }
 
     @Test
+    @DisplayName("Should throw EntityNotFoundException when deleting a product with non-existing ID")
     public void deleteShouldThrowEntityNotFoundExceptionWhenIdDoesNotExist() {
         Assertions.assertThrows(EntityNotFoundException.class, () -> {
             productService.deleteById(nonExistingId);

@@ -2,10 +2,7 @@ package com.devsuperior.dscatalog.repositories;
 
 import com.devsuperior.dscatalog.entities.Product;
 import com.devsuperior.dscatalog.tests.Factory;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
@@ -30,18 +27,21 @@ public class ProductRepositoryTests {
     }
 
     @Test
+    @DisplayName("Should return a non-empty Optional when ID exists")
     public void findByIdShouldReturnNonEmptyOptionalWhenIdExists() {
         Optional<Product> product = productRepository.findById(existingId);
         Assertions.assertTrue(product.isPresent());
     }
 
     @Test
+    @DisplayName("Should return an empty Optional when ID does not exist")
     public void findByIdShouldReturnEmptyOptionalWhenIdDoesNotExist() {
         Optional<Product> product = productRepository.findById(nonExistingId);
         Assertions.assertFalse(product.isPresent());
     }
 
     @Test
+@   DisplayName("Should persist a product with auto-incremented ID when ID is null")
     public void saveShouldPersistWithAutoIncrementWhenIdIsNull() {
         Product product = Factory.createProduct();
         product.setId(null);
@@ -53,6 +53,7 @@ public class ProductRepositoryTests {
     }
 
     @Test
+    @DisplayName("Should update an existing product when ID exists")
     public void saveShouldUpdateExistingProductWhenIdExists() {
         Product product = productRepository.findById(existingId).get();
 
@@ -64,6 +65,7 @@ public class ProductRepositoryTests {
     }
 
     @Test
+    @DisplayName("Should remove a product when ID exists")
     public void deleteShouldRemoveProductWhenIdExists() {
 
         productRepository.deleteById(existingId);

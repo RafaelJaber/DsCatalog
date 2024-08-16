@@ -12,6 +12,7 @@ import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
 import com.devsuperior.dscatalog.tests.Factory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -74,6 +75,7 @@ public class ProductControllerTests {
     }
 
     @Test
+    @DisplayName("Should return a page of products")
     public void findAllShouldReturnPage() throws Exception {
         ResultActions result =
                 mockMvc.perform(get("/products")
@@ -84,6 +86,7 @@ public class ProductControllerTests {
     }
 
     @Test
+    @DisplayName("Should return a product when ID exists")
     public void findByIdShouldReturnProductWhenIdExists() throws Exception {
         ResultActions result =
                 mockMvc.perform(get("/products/{id}", existingId)
@@ -95,6 +98,7 @@ public class ProductControllerTests {
     }
 
     @Test
+    @DisplayName("Should return 404 Not Found when ID does not exist")
     public void findByIdShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
         ResultActions result =
                 mockMvc.perform(get("/products/{id}", nonExistingId)
@@ -106,6 +110,7 @@ public class ProductControllerTests {
     }
 
     @Test
+    @DisplayName("Should create a new product and return it")
     public void insertShouldBeAbleToPersistProduct() throws Exception {
         String jsonBody = objectMapper.writeValueAsString(productRequest);
         ResultActions result =
@@ -122,6 +127,7 @@ public class ProductControllerTests {
     }
 
     @Test
+    @DisplayName("Should update a product and return the updated product when ID exists")
     public void updateShouldReturnProductResponseWhenIdExists() throws Exception {
         String jsonBody = objectMapper.writeValueAsString(productRequest);
         ResultActions result =
@@ -138,6 +144,7 @@ public class ProductControllerTests {
     }
 
     @Test
+    @DisplayName("Should return 404 Not Found when updating a product with non-existing ID")
     public void updateShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
         String jsonBody = objectMapper.writeValueAsString(productRequest);
         ResultActions result =
@@ -152,6 +159,7 @@ public class ProductControllerTests {
     }
 
     @Test
+    @DisplayName("Should delete a product when ID exists")
     public void deleteShouldDoNothingWhenIdExists() throws Exception {
         ResultActions result =
                 mockMvc.perform(delete("/products/{id}", existingId)
@@ -162,6 +170,7 @@ public class ProductControllerTests {
     }
 
     @Test
+    @DisplayName("Should return 404 Not Found when deleting a product with non-existing ID")
     public void deleteShouldThrowsEntityNotFoundExceptionWhenIdDoesNotExists() throws Exception {
         ResultActions result =
                 mockMvc.perform(delete("/products/{id}", nonExistingId)
@@ -172,6 +181,7 @@ public class ProductControllerTests {
     }
 
     @Test
+    @DisplayName("Should return 400 Bad Request when deleting a product with dependent entities")
     public void deleteShouldThrowsDatabaseIntegrityExceptionWhenIdDoesNotExists() throws Exception {
         ResultActions result =
                 mockMvc.perform(delete("/products/{id}", dependentId)
