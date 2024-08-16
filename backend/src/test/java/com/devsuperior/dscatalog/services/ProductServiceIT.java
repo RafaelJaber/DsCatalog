@@ -1,8 +1,10 @@
 package com.devsuperior.dscatalog.services;
 
+import com.devsuperior.dscatalog.dto.requests.ProductRequest;
 import com.devsuperior.dscatalog.dto.responses.ProductResponse;
 import com.devsuperior.dscatalog.repositories.ProductRepository;
 import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
+import com.devsuperior.dscatalog.tests.Factory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +28,7 @@ public class ProductServiceIT {
     private Long existingId;
     private Long nonExistingId;
     private Long countTotalProducts;
+    private ProductRequest productRequest;
 
 
     @BeforeEach
@@ -33,6 +36,7 @@ public class ProductServiceIT {
         existingId = 1L;
         nonExistingId = 99999L;
         countTotalProducts = productRepository.count();
+        productRequest = Factory.createProductRequest();
     }
 
     @Test
@@ -76,6 +80,49 @@ public class ProductServiceIT {
         Assertions.assertEquals("Macbook Pro", result.getContent().getFirst().getName());
         Assertions.assertEquals("PC Gamer", result.getContent().get(1).getName());
         Assertions.assertEquals("PC Gamer Alfa", result.getContent().get(2).getName());
+    }
+
+    @Test
+    public void findByIdShouldReturnProductWhenIdExists() {
+        ProductResponse result = productService.findById(existingId);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(existingId, result.getId());
+    }
+
+    @Test
+    public void findByIdShouldThrowEntityNotFoundExceptionWhenIdDoesExists() {
+        Assertions.assertThrows(EntityNotFoundException.class, () -> {
+            productService.findById(nonExistingId);
+        });
+    }
+
+    @Test
+    public void insertShouldPersistProduct() {
+        ProductResponse result = productService.insert(productRequest);
+
+        Assertions.assertNotNull(result);
+        Assertions.assertNotNull(result.getId());
+        Assertions.assertEquals(countTotalProducts + 1, productRepository.count());
+    }
+
+    @Test
+    public void updateShouldBeReturnProductResponseWhenIdExists() {
+        String newName = "UPDATED_NAME";
+
+        productRequest.setName(newName);
+        ProductResponse productResponse = productService.update(productRequest, existingId);
+
+        Assertions.assertNotNull(productResponse);
+        Assertions.assertEquals(existingId, productResponse.getId());
+        Assertions.assertEquals(newName, productResponse.getName());
+    }
+
+    @Test
+    public void updateShouldBeThrowsExceptionWhenIdDoesNotExist() {
+        Assertions.assertThrows(jakarta.persistence.EntityNotFoundException.class, () -> {
+            productService.update(productRequest, nonExistingId);
+        });
     }
 
     @Test
