@@ -9,6 +9,7 @@ import com.devsuperior.dscatalog.repositories.RoleRepository;
 import com.devsuperior.dscatalog.repositories.UserRepository;
 import com.devsuperior.dscatalog.services.exceptions.DatabaseIntegrityException;
 import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
+import com.devsuperior.dscatalog.services.exceptions.UniqueKeyDatabaseException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,18 +51,22 @@ public class UserService {
 
     @Transactional
     public UserResponse insert(UserRequest request) {
-        User user = new User();
-        copyDtoToEntity(request, user);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        try {
+            User user = new User();
+            copyDtoToEntity(request, user);
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        User inserted = userRepository.save(user);
-        return new UserResponse(inserted);
+            User inserted = userRepository.save(user);
+            return new UserResponse(inserted);
+        } catch (DataIntegrityViolationException e) {
+            throw new UniqueKeyDatabaseException();
+        }
     }
 
     @Transactional
     public UserResponse update(UserRequest request, Long id) {
         try {
-            User user = new User();
+            User user = userRepository.getReferenceById(id);
             copyDtoToEntity(request, user);
 
             User updated = userRepository.save(user);
