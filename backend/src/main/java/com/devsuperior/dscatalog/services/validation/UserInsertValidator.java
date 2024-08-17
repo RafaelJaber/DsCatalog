@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsertRequest> {
 
@@ -25,8 +26,8 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
 
         List<FieldMessageResponse> list = new ArrayList<>();
 
-        User user = userRepository.findByEmail(dto.getEmail());
-        if (user != null) {
+        Optional<User> user = userRepository.findByEmail(dto.getEmail());
+        if (user.isPresent()) {
             list.add(new FieldMessageResponse("email", "This email address is already registered."));
         }
 

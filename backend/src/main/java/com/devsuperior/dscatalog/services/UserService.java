@@ -13,6 +13,7 @@ import com.devsuperior.dscatalog.repositories.UserRepository;
 import com.devsuperior.dscatalog.services.exceptions.DatabaseIntegrityException;
 import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
 import com.devsuperior.dscatalog.services.exceptions.UniqueKeyDatabaseException;
+import com.devsuperior.dscatalog.services.exceptions.UserNotLoggedException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -118,21 +120,21 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-//    @Transactional(readOnly = true)
-//    public UserResponse getCurrentUser() {
-//        User user = this.authenticated();
-//        return new UserResponse(user);
-//    }
+    @Transactional(readOnly = true)
+    public UserResponse getCurrentUser() {
+        User user = this.authenticated();
+        return new UserResponse(user);
+    }
 
-//    protected User authenticated() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Jwt jwtPrincipal = (Jwt) authentication.getPrincipal();
-//        String username = jwtPrincipal.getClaim("username");
-//
-//        return userRepository.findByEmail(username).orElseThrow(
-//                UserNotLoggedException::new
-//        );
-//    }
+    protected User authenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Jwt jwtPrincipal = (Jwt) authentication.getPrincipal();
+        String username = jwtPrincipal.getClaim("username");
+
+        return userRepository.findByEmail(username).orElseThrow(
+                () -> new UserNotLoggedException("User not logged in")
+        );
+    }
 
     private void copyDtoToEntity(UserRequest source, User target) {
         target.setFirstName(source.getFirstName());
