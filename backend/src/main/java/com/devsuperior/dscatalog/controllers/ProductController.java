@@ -3,6 +3,7 @@ package com.devsuperior.dscatalog.controllers;
 import com.devsuperior.dscatalog.dto.requests.ProductRequest;
 import com.devsuperior.dscatalog.dto.responses.ProductResponse;
 import com.devsuperior.dscatalog.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponse> insert(@RequestBody ProductRequest requestDto) {
+    public ResponseEntity<ProductResponse> insert(@Valid @RequestBody ProductRequest requestDto) {
         ProductResponse inserted = productService.insert(requestDto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(inserted.getId()).toUri();
@@ -45,7 +46,7 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> update(
             @PathVariable Long id,
-            @RequestBody ProductRequest requestDto
+            @Valid @RequestBody ProductRequest requestDto
     ) {
         ProductResponse updated = productService.update(requestDto, id);
         return ResponseEntity.status(HttpStatus.OK).body(updated);

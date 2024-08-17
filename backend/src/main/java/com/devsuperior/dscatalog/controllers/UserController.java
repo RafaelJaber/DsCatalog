@@ -3,6 +3,7 @@ package com.devsuperior.dscatalog.controllers;
 import com.devsuperior.dscatalog.dto.requests.UserRequest;
 import com.devsuperior.dscatalog.dto.responses.UserResponse;
 import com.devsuperior.dscatalog.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponse> insert(@RequestBody UserRequest request) {
+    public ResponseEntity<UserResponse> insert(@Valid @RequestBody UserRequest request) {
         UserResponse inserted = userService.insert(request);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(inserted.getId()).toUri();
@@ -45,7 +46,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> update(
             @PathVariable Long id,
-            @RequestBody UserRequest request
+            @Valid @RequestBody UserRequest request
     ) {
         UserResponse updated = userService.update(request, id);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
