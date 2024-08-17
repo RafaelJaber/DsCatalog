@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.devsuperior.dscatalog.dto.requests.CategoryRequest;
 import com.devsuperior.dscatalog.tests.Factory;
+import com.devsuperior.dscatalog.tests.TokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,17 +32,27 @@ public class CategoryControllerIT {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private TokenUtil tokenUtil;
+
     private Long existingId;
     private Long nonExistingId;
     private Long countTotalCategories;
     private CategoryRequest categoryRequest;
 
+    private String bearerToken;
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         existingId = 1L;
         nonExistingId = 99999L;
         countTotalCategories = 3L;
         categoryRequest = Factory.createCategoryRequest();
+
+        String username = "maria@gmail.com";
+        String password = "123456";
+
+        bearerToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
     }
 
     @Test
@@ -89,6 +100,7 @@ public class CategoryControllerIT {
         String jsonBody = objectMapper.writeValueAsString(categoryRequest);
         ResultActions result =
                 mockMvc.perform(post("/categories")
+                        .header("Authorization", "Bearer " + bearerToken)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -107,6 +119,7 @@ public class CategoryControllerIT {
         String jsonBody = objectMapper.writeValueAsString(categoryRequest);
         ResultActions result =
                 mockMvc.perform(put("/categories/{id}", existingId)
+                        .header("Authorization", "Bearer " + bearerToken)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -124,6 +137,7 @@ public class CategoryControllerIT {
         String jsonBody = objectMapper.writeValueAsString(categoryRequest);
         ResultActions result =
                 mockMvc.perform(put("/categories/{id}", nonExistingId)
+                        .header("Authorization", "Bearer " + bearerToken)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -138,6 +152,7 @@ public class CategoryControllerIT {
     public void deleteShouldThrowEntityNotFoundExceptionWhenIdDoesNotExists() throws Exception {
         ResultActions result =
                 mockMvc.perform(delete("/categories/{id}", nonExistingId)
+                        .header("Authorization", "Bearer " + bearerToken)
                         .accept(MediaType.APPLICATION_JSON)
                 );
 

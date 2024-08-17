@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.devsuperior.dscatalog.dto.requests.ProductRequest;
 import com.devsuperior.dscatalog.tests.Factory;
+import com.devsuperior.dscatalog.tests.TokenUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,18 +32,28 @@ public class ProductControllerIT {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private TokenUtil tokenUtil;
+
     private Long existingId;
     private Long nonExistingId;
     private Long countTotalProducts;
     private ProductRequest productRequest;
 
+    private String bearerToken;
+
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         existingId = 1L;
         nonExistingId = 99999L;
         countTotalProducts = 25L;
         productRequest = Factory.createProductRequest();
+
+        String username = "maria@gmail.com";
+        String password = "123456";
+
+        bearerToken = tokenUtil.obtainAccessToken(mockMvc, username, password);
     }
 
     @Test
@@ -90,6 +101,7 @@ public class ProductControllerIT {
         String jsonBody = objectMapper.writeValueAsString(productRequest);
         ResultActions result =
                 mockMvc.perform(post("/products", existingId)
+                        .header("Authorization", "Bearer " + bearerToken)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -109,6 +121,7 @@ public class ProductControllerIT {
         String jsonBody = objectMapper.writeValueAsString(productRequest);
         ResultActions result =
                 mockMvc.perform(put("/products/{id}", existingId)
+                        .header("Authorization", "Bearer " + bearerToken)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -127,6 +140,7 @@ public class ProductControllerIT {
         String jsonBody = objectMapper.writeValueAsString(productRequest);
         ResultActions result =
                 mockMvc.perform(put("/products/{id}", nonExistingId)
+                        .header("Authorization", "Bearer " + bearerToken)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -141,6 +155,7 @@ public class ProductControllerIT {
     public void deleteShouldThrowsEntityNotFoundExceptionWhenIdDoesNotExists() throws Exception {
         ResultActions result =
                 mockMvc.perform(delete("/products/{id}", nonExistingId)
+                        .header("Authorization", "Bearer " + bearerToken)
                         .accept(MediaType.APPLICATION_JSON)
                 );
 
