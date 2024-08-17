@@ -132,7 +132,7 @@ public class UserService implements UserDetailsService {
         String username = jwtPrincipal.getClaim("username");
 
         return userRepository.findByEmail(username).orElseThrow(
-                () -> new UserNotLoggedException("User not logged in")
+                UserNotLoggedException::new
         );
     }
 
