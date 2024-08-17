@@ -1,5 +1,6 @@
 package com.devsuperior.dscatalog.dto.requests;
 
+import com.devsuperior.dscatalog.services.validation.UserUpdateValid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -25,9 +26,6 @@ public class UserRequest {
 
     @Email(message = "Invalid email address")
     private String email;
-
-
-    private String password;
 
     private List<RoleRequest> roles;
 }

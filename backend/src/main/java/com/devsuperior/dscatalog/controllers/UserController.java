@@ -1,6 +1,7 @@
 package com.devsuperior.dscatalog.controllers;
 
-import com.devsuperior.dscatalog.dto.requests.UserRequest;
+import com.devsuperior.dscatalog.dto.requests.UserInsertRequest;
+import com.devsuperior.dscatalog.dto.requests.UserUpdateRequest;
 import com.devsuperior.dscatalog.dto.responses.UserResponse;
 import com.devsuperior.dscatalog.services.UserService;
 import jakarta.validation.Valid;
@@ -36,7 +37,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponse> insert(@Valid @RequestBody UserRequest request) {
+    public ResponseEntity<UserResponse> insert(@Valid @RequestBody UserInsertRequest request) {
         UserResponse inserted = userService.insert(request);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(inserted.getId()).toUri();
@@ -46,7 +47,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> update(
             @PathVariable Long id,
-            @Valid @RequestBody UserRequest request
+            @Valid @RequestBody UserUpdateRequest request
     ) {
         UserResponse updated = userService.update(request, id);
         return ResponseEntity.status(HttpStatus.OK).body(updated);
