@@ -1,0 +1,23 @@
+{
+  "properties": [
+    {
+      "name": "dscatalog.security.client-id",
+      "type": "java.lang.String",
+      "description": "Description for dscatalog.security.client-id."
+    },
+    {
+      "name": "dscatalog.security.client-secret",
+      "type": "java.lang.String",
+      "description": "Description for dscatalog.security.client-secret."
+    },
+    {
+      "name": "dscatalog.security.jwt.duration",
+      "type": "java.lang.String",
+      "description": "Description for dscatalog.security.jwt.duration."
+    },
+    {
+      "name": "dscatalog.security.cors.origins",
+      "type": "java.lang.String",
+      "description": "Description for dscatalog.security.cors.origins."
+    }
+  ] }
