@@ -84,19 +84,24 @@ java -jar backend/target/dscatalog-0.0.1-SNAPSHOT.jar
 
 <h2 id="routes">📍 Endpoints da API</h2>
 
-| Rota                                    | Descrição                           |
-|-----------------------------------------|-------------------------------------|
-| <kbd>GET /categories</kbd>              | Buscar categorias                   |
-| <kbd>GET /categories/{categoryId}</kbd> | Buscar categoria informando o ID    |
-| <kbd>POST /categories</kbd>             | Cadastrar categorias                |
-| <kbd>PUT /categories</kbd>              | Atualizar categoria informando o id |
-| <kbd>DEL /categories/{categoryId}</kbd> | Deletar categoria informando o id   |
-| <kbd>GET /products</kbd>                | Buscar produtos                     |
-| <kbd>GET /products/{productId}</kbd>    | Buscar produto informando o id      |
-| <kbd>POST /products</kbd>               | Cadastrar produto                   |
-| <kbd>PUT /products</kbd>                | Atualizar produto informando o id   |
-| <kbd>DEL /products/{productId}</kbd>    | Deletar produto informando o id     |
-
+| Rota                                    | Descrição                                               |
+|-----------------------------------------|---------------------------------------------------------|
+| <kbd>POST /oauth2/token</kbd>           | Logar                                                   |
+| <kbd>GET /categories</kbd>              | Buscar categorias - Sem autenticação                    |
+| <kbd>GET /categories/{categoryId}</kbd> | Buscar categoria informando o ID - Sem autenticação     |
+| <kbd>POST /categories</kbd>             | Cadastrar categorias - Estar autenticado                |
+| <kbd>PUT /categories</kbd>              | Atualizar categoria informando o id - Estar autenticado |
+| <kbd>DEL /categories/{categoryId}</kbd> | Deletar categoria informando o id - Estar autenticado   |
+| <kbd>GET /products</kbd>                | Buscar produtos - Sem autenticação                      |
+| <kbd>GET /products/{productId}</kbd>    | Buscar produto informando o id - Sem autenticação       |
+| <kbd>POST /products</kbd>               | Cadastrar produto - Estar autenticado                   |
+| <kbd>PUT /products</kbd>                | Atualizar produto informando o id - Estar autenticado   |
+| <kbd>DEL /products/{productId}</kbd>    | Deletar produto informando o id - Estar autenticado     |
+| <kbd>GET /users</kbd>                   | Buscar usuários - Permissão admin                       |
+| <kbd>GET /users/{userId}</kbd>          | Buscar usuário informando o id - Permissão admin        |
+| <kbd>POST /users</kbd>                  | Cadastrar usuário - Permissão admin                     |
+| <kbd>PUT /users</kbd>                   | Atualizar usuário informando o id - Permissão admin     |
+| <kbd>DEL /users/{userId}</kbd>          | Deletar usuário informando o id - Permissão admin       |
 
 <h2 id="colab">🤝 Colaboradores</h2>
 
