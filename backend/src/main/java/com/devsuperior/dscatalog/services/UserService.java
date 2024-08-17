@@ -7,6 +7,7 @@ import com.devsuperior.dscatalog.dto.requests.UserUpdateRequest;
 import com.devsuperior.dscatalog.dto.responses.UserResponse;
 import com.devsuperior.dscatalog.entities.Role;
 import com.devsuperior.dscatalog.entities.User;
+import com.devsuperior.dscatalog.projections.UserDetailsProjection;
 import com.devsuperior.dscatalog.repositories.RoleRepository;
 import com.devsuperior.dscatalog.repositories.UserRepository;
 import com.devsuperior.dscatalog.services.exceptions.DatabaseIntegrityException;
@@ -15,6 +16,8 @@ import com.devsuperior.dscatalog.services.exceptions.UniqueKeyDatabaseException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +25,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -95,8 +100,39 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return null;
+        List<UserDetailsProjection> result = userRepository.searchUserAndRolesByEmail(username);
+        if (result.isEmpty()) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        User user = new User();
+        user.setEmail(username);
+        user.setPassword(result.getFirst().getPassword());
+        for (UserDetailsProjection userDetails : result) {
+            user.addRole(new Role(
+                    userDetails.getRoleId(),
+                    userDetails.getAuthority()
+            ));
+        }
+
+        return user;
     }
+
+//    @Transactional(readOnly = true)
+//    public UserResponse getCurrentUser() {
+//        User user = this.authenticated();
+//        return new UserResponse(user);
+//    }
+
+//    protected User authenticated() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        Jwt jwtPrincipal = (Jwt) authentication.getPrincipal();
+//        String username = jwtPrincipal.getClaim("username");
+//
+//        return userRepository.findByEmail(username).orElseThrow(
+//                UserNotLoggedException::new
+//        );
+//    }
 
     private void copyDtoToEntity(UserRequest source, User target) {
         target.setFirstName(source.getFirstName());
