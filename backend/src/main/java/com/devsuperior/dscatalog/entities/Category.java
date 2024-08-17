@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -27,6 +29,9 @@ public class Category {
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP WITH TIME ZONE")
     private OffsetDateTime updatedAt;
 
+    @ManyToMany(mappedBy = "categories")
+    private Set<Product> products = new HashSet<>();
+
     @PrePersist
     public void prePersist() {
         this.createdAt = OffsetDateTime.now();
@@ -36,6 +41,7 @@ public class Category {
     public void preUpdate() {
         this.updatedAt = OffsetDateTime.now();
     }
+
 
     @Override
     public boolean equals(Object o) {
