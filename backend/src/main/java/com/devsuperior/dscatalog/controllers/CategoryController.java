@@ -4,8 +4,6 @@ import com.devsuperior.dscatalog.dto.requests.CategoryRequest;
 import com.devsuperior.dscatalog.dto.responses.CategoryResponse;
 import com.devsuperior.dscatalog.services.CategoryService;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
@@ -25,8 +24,8 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<CategoryResponse>> findAll(Pageable pageable) {
-        Page<CategoryResponse> list = categoryService.findAll(pageable);
+    public ResponseEntity<List<CategoryResponse>> findAll() {
+        List<CategoryResponse> list = categoryService.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
