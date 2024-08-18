@@ -2,6 +2,7 @@ package com.devsuperior.dscatalog.controllers;
 
 import com.devsuperior.dscatalog.dto.requests.ProductRequest;
 import com.devsuperior.dscatalog.dto.responses.ProductResponse;
+import com.devsuperior.dscatalog.projections.ProductProjection;
 import com.devsuperior.dscatalog.services.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,16 @@ public class ProductController {
     public ResponseEntity<Page<ProductResponse>> findAll(Pageable pageable) {
         Page<ProductResponse> products = productService.findAll(pageable);
         return ResponseEntity.status(HttpStatus.OK).body(products);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<Page<ProductProjection>> findProductProjection(
+            @RequestParam(value = "name", defaultValue = "") String name,
+            @RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
+            Pageable pageable
+    ) {
+        Page<ProductProjection> result = productService.findAllProductProjection(categoryId, name, pageable);
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @GetMapping("/{id}")

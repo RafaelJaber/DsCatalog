@@ -5,6 +5,7 @@ import com.devsuperior.dscatalog.dto.requests.ProductRequest;
 import com.devsuperior.dscatalog.dto.responses.ProductResponse;
 import com.devsuperior.dscatalog.entities.Category;
 import com.devsuperior.dscatalog.entities.Product;
+import com.devsuperior.dscatalog.projections.ProductProjection;
 import com.devsuperior.dscatalog.repositories.CategoryRepository;
 import com.devsuperior.dscatalog.repositories.ProductRepository;
 import com.devsuperior.dscatalog.services.exceptions.DatabaseIntegrityException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -92,5 +94,16 @@ public class ProductService {
             Category category = categoryRepository.getReferenceById(catReq.getId());
             entity.getCategories().add(category);
         }
+    }
+
+    public Page<ProductProjection> findAllProductProjection(String categoryId, String name, Pageable pageable) {
+
+        List<Long> categoryIds = Arrays.asList();
+
+        if (!"0".equals(categoryId)) {
+            categoryIds = Arrays.stream(categoryId.split(",")).map(Long::parseLong).toList();
+        }
+
+        return productRepository.searchProducts(categoryIds ,name, pageable);
     }
 }
