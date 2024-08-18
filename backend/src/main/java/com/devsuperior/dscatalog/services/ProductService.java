@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -99,6 +98,8 @@ public class ProductService {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @Transactional(readOnly = true)
     public Page<ProductResponse> findAllProductProjection(String categoryId, String name, Pageable pageable) {
 
         List<Long> categoryIds = Arrays.asList();
@@ -111,7 +112,8 @@ public class ProductService {
         List<Long> productIds = page.map(ProductProjection::getId).toList();
 
         List<Product> entities = productRepository.searchProductsWithCategories(productIds);
-        entities = Utils.replaceSort(page.getContent(), entities);
+
+        entities = (List<Product>) Utils.replaceSort(page.getContent(), entities);
 
         List<ProductResponse> responses = entities.stream()
                 .map(p -> new ProductResponse(p, p.getCategories()))

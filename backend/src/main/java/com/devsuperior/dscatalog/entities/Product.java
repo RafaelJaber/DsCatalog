@@ -1,5 +1,6 @@
 package com.devsuperior.dscatalog.entities;
 
+import com.devsuperior.dscatalog.projections.IdProjection;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "tb_product")
-public class Product {
+public class Product implements IdProjection<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
