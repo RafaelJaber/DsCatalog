@@ -10,6 +10,7 @@ import com.devsuperior.dscatalog.repositories.CategoryRepository;
 import com.devsuperior.dscatalog.repositories.ProductRepository;
 import com.devsuperior.dscatalog.services.exceptions.DatabaseIntegrityException;
 import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
+import com.devsuperior.dscatalog.util.Utils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -110,6 +111,8 @@ public class ProductService {
         List<Long> productIds = page.map(ProductProjection::getId).toList();
 
         List<Product> entities = productRepository.searchProductsWithCategories(productIds);
+        entities = Utils.replaceSort(page.getContent(), entities);
+
         List<ProductResponse> responses = entities.stream()
                 .map(p -> new ProductResponse(p, p.getCategories()))
                 .toList();
