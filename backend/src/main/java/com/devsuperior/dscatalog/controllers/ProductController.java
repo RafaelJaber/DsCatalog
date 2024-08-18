@@ -32,12 +32,12 @@ public class ProductController {
     }
 
     @GetMapping("/test")
-    public ResponseEntity<Page<ProductProjection>> findProductProjection(
+    public ResponseEntity<Page<ProductResponse>> findProductProjection(
             @RequestParam(value = "name", defaultValue = "") String name,
             @RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
             Pageable pageable
     ) {
-        Page<ProductProjection> result = productService.findAllProductProjection(categoryId, name, pageable);
+        Page<ProductResponse> result = productService.findAllProductProjection(categoryId, name, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 

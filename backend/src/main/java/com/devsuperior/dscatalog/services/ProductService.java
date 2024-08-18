@@ -12,11 +12,13 @@ import com.devsuperior.dscatalog.services.exceptions.DatabaseIntegrityException;
 import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -96,7 +98,7 @@ public class ProductService {
         }
     }
 
-    public Page<ProductProjection> findAllProductProjection(String categoryId, String name, Pageable pageable) {
+    public Page<ProductResponse> findAllProductProjection(String categoryId, String name, Pageable pageable) {
 
         List<Long> categoryIds = Arrays.asList();
 
@@ -104,6 +106,14 @@ public class ProductService {
             categoryIds = Arrays.stream(categoryId.split(",")).map(Long::parseLong).toList();
         }
 
-        return productRepository.searchProducts(categoryIds ,name, pageable);
+        Page<ProductProjection> page = productRepository.searchProducts(categoryIds ,name, pageable);
+        List<Long> productIds = page.map(ProductProjection::getId).toList();
+
+        List<Product> entities = productRepository.searchProductsWithCategories(productIds);
+        List<ProductResponse> responses = entities.stream()
+                .map(p -> new ProductResponse(p, p.getCategories()))
+                .toList();
+
+        return new PageImpl<>(responses, page.getPageable(), page.getTotalElements());
     }
 }
