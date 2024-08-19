@@ -20,6 +20,10 @@ spring:
           starttls:
             enable: true
 dscatalog:
+  email:
+    password-recover:
+      uri: ${PASSWORD_RECOVER_URI:http://localhost:5173/recover-passwords}
+      expiration-token-seconds: ${PASSWORD_RECOVER_EXPIRATION_TOKEN_SECONDS:1800}
   security:
     client-id: ${CLIENT_ID:myclientid}
     client-secret: ${CLIENT_SECRET:myclientsecret}

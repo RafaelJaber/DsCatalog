@@ -19,5 +19,15 @@
       "name": "dscatalog.security.cors.origins",
       "type": "java.lang.String",
       "description": "Description for dscatalog.security.cors.origins."
+    },
+    {
+      "name": "dscatalog.email.password-recover.uri",
+      "type": "java.lang.String",
+      "description": "Description for dscatalog.email.password-recover.uri."
+    },
+    {
+      "name": "dscatalog.email.password-recover.expiration-token-seconds",
+      "type": "java.lang.String",
+      "description": "Description for dscatalog.email.password-recover.expiration-token-seconds."
     }
   ] }

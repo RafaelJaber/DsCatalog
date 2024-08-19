@@ -3,6 +3,7 @@ package com.devsuperior.dscatalog.controllers.handlers;
 import com.devsuperior.dscatalog.dto.responses.errors.CustomErrorResponse;
 import com.devsuperior.dscatalog.dto.responses.errors.ValidationErrorResponse;
 import com.devsuperior.dscatalog.services.exceptions.DatabaseIntegrityException;
+import com.devsuperior.dscatalog.services.exceptions.EmailException;
 import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
 import com.devsuperior.dscatalog.services.exceptions.UniqueKeyDatabaseException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +36,13 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(UniqueKeyDatabaseException.class)
     public ResponseEntity<CustomErrorResponse> uniqueKeyDatabaseExceptionHandler(UniqueKeyDatabaseException ex, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        CustomErrorResponse err = getCustomError(status, ex.getMessage(), request);
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(EmailException.class)
+    public ResponseEntity<CustomErrorResponse> emailExceptionHandler(EmailException ex, HttpServletRequest request) {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         CustomErrorResponse err = getCustomError(status, ex.getMessage(), request);
         return ResponseEntity.status(status).body(err);
