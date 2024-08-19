@@ -2,10 +2,12 @@ package com.devsuperior.dscatalog.controllers;
 
 import com.devsuperior.dscatalog.dto.requests.NewPasswordRequest;
 import com.devsuperior.dscatalog.dto.requests.UserRecoveryPasswordRequest;
+import com.devsuperior.dscatalog.dto.responses.ProfileResponse;
 import com.devsuperior.dscatalog.services.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +18,13 @@ public class AuthController {
 
     public AuthController(AuthService authService) {
         this.authService = authService;
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ProfileResponse> getCurrentUser() {
+        ProfileResponse result = authService.getCurrentUser();
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @PostMapping("/recover-token")

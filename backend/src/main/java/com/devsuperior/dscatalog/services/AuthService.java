@@ -1,14 +1,19 @@
 package com.devsuperior.dscatalog.services;
 
 import com.devsuperior.dscatalog.dto.requests.NewPasswordRequest;
+import com.devsuperior.dscatalog.dto.responses.ProfileResponse;
 import com.devsuperior.dscatalog.repositories.PasswordRecoverRepository;
 import com.devsuperior.dscatalog.entities.PasswordRecover;
 import com.devsuperior.dscatalog.entities.User;
 import com.devsuperior.dscatalog.repositories.UserRepository;
 import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
 import com.devsuperior.dscatalog.services.exceptions.InvalidPasswordRecoverTokenException;
+import com.devsuperior.dscatalog.services.exceptions.UserNotLoggedException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,6 +105,25 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(user);
 
+    }
+
+    @Transactional(readOnly = true)
+    public ProfileResponse getCurrentUser() {
+        User user = this.authenticate();
+        return new ProfileResponse(user);
+    }
+
+    protected User authenticate() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Jwt jwtPrincipal = (Jwt) authentication.getPrincipal();
+            String username = jwtPrincipal.getClaim("username");
+            return userRepository.findByEmail(username).orElseThrow(
+                    () -> new EntityNotFoundException("User", "email", username)
+            );
+        } catch (Exception e) {
+            throw new UserNotLoggedException();
+        }
     }
 
     private void invalidateOldUnusedTokensFromUser(String userEmail) {
