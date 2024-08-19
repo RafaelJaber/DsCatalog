@@ -1,6 +1,6 @@
 package com.devsuperior.dscatalog.services;
 
-import com.devsuperior.dscatalog.dto.responses.PasswordRecoverRepository;
+import com.devsuperior.dscatalog.repositories.PasswordRecoverRepository;
 import com.devsuperior.dscatalog.entities.PasswordRecover;
 import com.devsuperior.dscatalog.entities.User;
 import com.devsuperior.dscatalog.repositories.UserRepository;
