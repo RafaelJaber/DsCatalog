@@ -1,14 +1,20 @@
 package com.devsuperior.dscatalog.services;
 
+import com.devsuperior.dscatalog.dto.requests.NewPasswordRequest;
 import com.devsuperior.dscatalog.repositories.PasswordRecoverRepository;
 import com.devsuperior.dscatalog.entities.PasswordRecover;
 import com.devsuperior.dscatalog.entities.User;
 import com.devsuperior.dscatalog.repositories.UserRepository;
 import com.devsuperior.dscatalog.services.exceptions.EntityNotFoundException;
+import com.devsuperior.dscatalog.services.exceptions.InvalidPasswordRecoverTokenException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -16,6 +22,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordRecoverRepository passwordRecoverRepository;
+    private final PasswordEncoder passwordEncoder;
     private final EmailServices emailServices;
 
     @Value("${dscatalog.email.password-recover.expiration-token-seconds}")
@@ -27,10 +34,12 @@ public class AuthService {
     public AuthService(
             UserRepository userRepository,
             PasswordRecoverRepository passwordRecoverRepository,
+            PasswordEncoder passwordEncoder,
             EmailServices emailServices
     ) {
         this.userRepository = userRepository;
         this.passwordRecoverRepository = passwordRecoverRepository;
+        this.passwordEncoder = passwordEncoder;
         this.emailServices = emailServices;
     }
 
@@ -57,6 +66,31 @@ public class AuthService {
         );
 
         emailServices.sendEmail(inserted.getEmail(), subject, body);
+    }
+
+    @Transactional
+    public void setNewPassword(NewPasswordRequest request) {
+        System.out.println(request.getToken());
+        System.out.println(Instant.now());
+        List<PasswordRecover> result = passwordRecoverRepository.searchValidTokens(request.getToken(), Instant.now());
+        if (result.isEmpty()) {
+            throw new InvalidPasswordRecoverTokenException();
+        }
+        PasswordRecover passwordRecover = result.getFirst();
+
+        User user = userRepository.findByEmail(passwordRecover.getEmail()).orElseThrow(
+                () -> {
+                    passwordRecover.setUsedAt(OffsetDateTime.now());
+                    passwordRecoverRepository.save(passwordRecover);
+                    return new EntityNotFoundException("User", "email", passwordRecover.getEmail());
+                }
+        );
+
+        passwordRecover.setUsedAt(OffsetDateTime.now());
+        passwordRecoverRepository.save(passwordRecover);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        userRepository.save(user);
+
     }
 
 
@@ -149,4 +183,6 @@ public class AuthService {
                 "</body>" +
                 "</html>";
     }
+
+
 }
