@@ -40,7 +40,6 @@ public class UserController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<UserResponse> insert(@Valid @RequestBody UserInsertRequest request) {
         UserResponse inserted = userService.insert(request);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")

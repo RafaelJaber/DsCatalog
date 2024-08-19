@@ -66,8 +66,12 @@ public class UserService implements UserDetailsService {
         try {
             User user = new User();
             copyDtoToEntity(request, user);
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
 
+            user.getRoles().clear();
+            Role role = roleRepository.findByAuthority("ROLE_OPERATOR");
+            user.getRoles().add(role);
+
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
             User inserted = userRepository.save(user);
             return new UserResponse(inserted);
         } catch (DataIntegrityViolationException e) {

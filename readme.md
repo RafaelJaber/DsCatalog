@@ -99,7 +99,7 @@ java -jar backend/target/dscatalog-0.0.1-SNAPSHOT.jar
 | <kbd>DEL /products/{productId}</kbd>    | Deletar produto informando o id - Estar autenticado     |
 | <kbd>GET /users</kbd>                   | Buscar usuários - Permissão admin                       |
 | <kbd>GET /users/{userId}</kbd>          | Buscar usuário informando o id - Permissão admin        |
-| <kbd>POST /users</kbd>                  | Cadastrar usuário - Permissão admin                     |
+| <kbd>POST /users</kbd>                  | Cadastrar usuário - Sem autenticação                    |
 | <kbd>PUT /users</kbd>                   | Atualizar usuário informando o id - Permissão admin     |
 | <kbd>DEL /users/{userId}</kbd>          | Deletar usuário informando o id - Permissão admin       |
 
