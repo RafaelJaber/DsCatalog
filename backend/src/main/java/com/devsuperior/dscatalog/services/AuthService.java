@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -43,11 +45,12 @@ public class AuthService {
         this.emailServices = emailServices;
     }
 
-
+    @Transactional
     public void createRecoveryToken(String email) {
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new EntityNotFoundException("User", "email", email)
         );
+        this.invalidateOldUnusedTokensFromUser(email);
 
         PasswordRecover entity = PasswordRecover.builder()
                 .email(user.getEmail())
@@ -86,6 +89,12 @@ public class AuthService {
                 }
         );
 
+        if (!Objects.equals(passwordRecover.getEmail(), user.getEmail())) {
+            passwordRecover.setUsedAt(OffsetDateTime.now());
+            passwordRecoverRepository.save(passwordRecover);
+            throw new InvalidPasswordRecoverTokenException();
+        }
+
         passwordRecover.setUsedAt(OffsetDateTime.now());
         passwordRecoverRepository.save(passwordRecover);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -93,6 +102,18 @@ public class AuthService {
 
     }
 
+    private void invalidateOldUnusedTokensFromUser(String userEmail) {
+        List<PasswordRecover> listTokenValid = passwordRecoverRepository.searchValidTokensFromEmail(
+                userEmail, Instant.now());
+        List<PasswordRecover> tokensToInvalidate = new ArrayList<>();
+
+        for (PasswordRecover entity : listTokenValid) {
+            entity.setUsedAt(OffsetDateTime.now());
+            tokensToInvalidate.add(entity);
+        }
+
+        passwordRecoverRepository.saveAll(tokensToInvalidate);
+    }
 
     private String buildPasswordResetEmail(String userName, String userEmail, String resetLink, Long tokenValidityMinutes) {
         return "<!DOCTYPE html>" +
@@ -183,6 +204,4 @@ public class AuthService {
                 "</body>" +
                 "</html>";
     }
-
-
 }
