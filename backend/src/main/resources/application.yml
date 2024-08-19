@@ -7,6 +7,18 @@ spring:
     active: ${APP_PROFILE:test}
   jpa:
     open-in-view: false
+    #phmw wrcs khme qsks
+  mail:
+    host: ${EMAIL_HOST:smtp.gmail.com}
+    port: ${EMAIL_PORT:587}
+    username: ${EMAIL_USERNAME:test@gmail.com}
+    password: ${EMAIL_PASSWORD:123456}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 dscatalog:
   security:
     client-id: ${CLIENT_ID:myclientid}
